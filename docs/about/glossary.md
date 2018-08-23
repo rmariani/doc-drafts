@@ -55,7 +55,7 @@ vane.
 
 Arvo being purely functional means that the it is a function that is:  
 
-> (state, events) → (state, effects).
+> (state, event) → (state, effects).
 
 Arvo coordinates and reloads vanes. It can be thought of as a traffic-director.
 Any vane needs to go through Arvo before reaching another vane. Events and
