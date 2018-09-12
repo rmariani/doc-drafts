@@ -17,10 +17,7 @@ be dealing with Sail as it renders to HTML, a subset of XML.
 Before starting, make sure that your urbit is
 [mounted to Unix](https://urbit.org/docs/using/setup/)
 
-Your urbit ship has a built-in mechanism, called the static-site generator, for
-taking a Hoon (or other) source file and producing an output file as HTML.
-
-To host that output, your ship also has a web-server, called
+Your ship also has a built-in web-server, called
 [Eyre](https://urbit.org/docs/using/web/), that can be found at
 http://localhost:8080/ if it’s your first ship that’s running on the a
 machine, http://localhost:8081/ if it’s the second ship on that same machine,
