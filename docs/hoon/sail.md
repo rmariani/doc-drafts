@@ -358,7 +358,8 @@ web-related operations.
 ### A More Interesting Example
 
 Now let’s apply knowledge of string interpolation and the Sail subject in a Sail
-source file. This produces a page with much more.
+source file. The following code produces more interesting things than the
+example we saw before.
 
 ```
 /=  gas  /$  fuel:html
@@ -515,7 +516,7 @@ That node creates an ordered list, and the items contained within that node.
             ;li(style "color: green"): We're doing more interesting stuff now.
 ```
 The line above  is the only element of this list that does not use
- Hoon proper. The line renders as green, as interpreted by the browser,
+Hoon proper. The line renders as green, as interpreted by the browser,
 because of the Sail attribute.
 
 The next items in the list use `{}`. Recall that these braces, pronounced “lob”
@@ -540,12 +541,11 @@ should be displayed in the form of an unsigned decimal.
             ;li: I am {(trip '~lodleb-ritrul')}.
 ```
 
-The code above turns a `cord` into a `tape`. Cords are one datatype for
-text in Hoon. A cord is just a big atom formed from adjacent unicode bytes, and
-are delineated by `''`. `trip` is a function that takes a cord and produces a
-tape. Remember that all rendered text is treated as a tape. So, by converting
-`~lodleb-ritrul` to a tape, it can be included in the tape that we are trying to
-insert it into without getting a type error.
+`trip` is a function that takes a `cord` and produces a `tape`. A piece of
+data of the cord type is one big atom formed from adjacent unicode bytes and
+delineated by `''`. Remember that all text rendered in Sail  is treated as a
+tape. So, by converting `~lodleb-ritrul` to a tape, it can be included in the
+tape that we are trying to insert it into without getting a type error.
 
 ```
             ;li: Actually, my name is {<p.bem.gas>}. I'm a {what-kind}.
@@ -559,7 +559,7 @@ that we could add that sort of information to the subject that our Sail is
 rendered against. The wing expression `p.bem.gas` looks for `p` within `bem`
 within `gas`, which happens to be where the name of the ship is located.
 
-Note how `{what-kind}` does not have a `<>` wrapper. Why do you think this is?
+Note that `{what-kind}` does not have a `<>` wrapper. Why do you think this is?
 
 ```
         ;div; My name is {<p.bem.gas>}. I'm a {ship}.
