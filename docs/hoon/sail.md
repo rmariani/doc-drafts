@@ -58,7 +58,7 @@ using files that are located in the `/<your-urbit>/home/web/pages` path.
 There is an important distinction between these two paths. According to
 `/ren/urb.hoon`, any file inside of `/web` or any of its sub-directories
 is put through a tree of renderers specified at `/ren/urb/tree.hoon`
--- *except* for files inside of `/web/pages`. All of the files in `~/web` and
+-- *except* for files inside of `/web/pages`. All of the files in `/web` and
 its non-`/pages` children directories have various operations on files, such as
 wrapping your Sail the `html`, `head`, and `body` nodes. This rendering tool,
 called simply **Tree**, also adds certain formatting polish, such as a sidebar
@@ -623,4 +623,4 @@ resources out there.
 The [Ford manual](https://urbit.org/docs/arvo/internals/ford/runes/)
 can show you how to access various ship resources for user in your pages. To
 learn more about how the renderer works, take a look at the
-`~/home/ren/urb.hoon` file inside your urbit.
+`/home/ren/urb.hoon` file inside your urbit.
