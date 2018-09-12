@@ -18,23 +18,65 @@ Before starting, make sure that your urbit is
 [mounted to Unix](https://urbit.org/docs/using/setup/)
 
 Your urbit ship has a built-in mechanism, called the static-site generator, for
-taking a Hoon source file and producing an output file as HTML. To this end,
-your ship also has a web server that can be found at http://localhost:8080/ if
-it’s your first ship that’s running on the a machine, http://localhost:8081/
-if it’s the second ship on that same machine, and so on.
+taking a Hoon (or other) source file and producing an output file as HTML.
 
-That server has access to source files located in `~/<your-urbit>/home/web` and
-any sub-folders thereof. For the purposes of this tutorial, we will only use
-files that are located immediately in the `~/web/pages` path. It’s possible that
-this path does not exist, in which case you must create it.
+To host that output, your ship also has a web-server, called
+[Eyre](https://urbit.org/docs/using/web/), that can be found at
+http://localhost:8080/ if it’s your first ship that’s running on the a
+machine, http://localhost:8081/ if it’s the second ship on that same machine,
+and so on.
 
-So, if a Sail source file named sailtest.hoon is saved in your `~/web/pages`
-folder on your only running urbit process, you can view a that source rendered
+The `/web` directory of the `%home` desk is served by default. You can change
+which desk you're serving by using the command `|serve` in the Dojo. If you
+have already created and mounted a desk named `%sandbox`, for example, you can
+switch to serving it with this command:
+
+```
+|serve %sandbox
+```
+
+The first time you serve a desk, `/web` will be included as default. After that,
+you will need to explicitly append `/web` to the desk you're switching to --
+otherwise, you'll need to write http://localhost:8080/web every time you
+navigate to your web-server. Newly served desks not automatically having `/web`
+as their root directory is a bug.
+
+To switch back to your `%home` desk and set `/web` as your root directory, run:
+
+```
+|serve %/web
+```
+
+We'll be serving the `%home` desk for the examples in this tutorial.
+
+#### Rendering
+
+That server has access to source files located in `/<your-urbit>/home/web` and
+any sub-folders thereof. For the purposes of this tutorial, we will only be
+using files that are located in the `/<your-urbit>/home/web/pages` path.
+
+There is an important distinction between these two paths. According to
+`/ren/urb.hoon`, any file inside of `/web` or any of its sub-directories
+is put through a tree of renderers specified at `/ren/urb/tree.hoon`
+-- *except* for files inside of `/web/pages`. All of the files in `~/web` and
+its non-`/pages` children directories have various operations on files, such as
+wrapping your Sail the `html`, `head`, and `body` nodes. This rendering tool,
+called simply **Tree**, also adds certain formatting polish, such as a sidebar
+that lists sibling files in the same directory.
+
+The `/web/pages` sub-directory is a unique case with its own rendering rules.
+The Tree is not used when rendering files in this path. The existence of no tag
+is inferred, and no special formatting is applied. Such simplicity is ideal for
+introducing the basics of Sail. Any source file located in `/web/pages` must
+produce a complete HTML node with "head" and "body" nodes as children.
+
+Understanding the details of the rendering pipeline is not necessary to complete
+this tutorial. But, if you are curious, you might find it illuminating to
+explore the contents of the `/ren` directory.
+
+So, if a Sail source file named `sailtest.hoon` is saved in your `/web/pages`  
+folder on your only running urbit process, you can view that source rendered
 into a web-page at `localhost:8080/pages/sailtest/`.
-
-Any source file that is in `~/web/pages` needs to produce a complete HTML node
--- all Sail must be wrapped in an "HTML" node that must have a "head" and a
-"body" as its two children.
 
 ### The Basics
 
@@ -72,8 +114,8 @@ It’s easy to see how Sail can directly translate to HTML:
 </html>
 ```
 
-Save the above Sail code in `~/home/web/pages/firstsail.hoon`, and the above
-HTML code in `~/home/web/pages/firsth.html`. Access the resulting pages by
+Save the above Sail code in `/home/web/pages/firstsail.hoon`, and the above
+HTML code in `/home/web/pages/firsth.html`. Access the resulting pages by
 navigating to http://localhost:8080/pages/firstsail and
 http://localhost:8080/pages/firsth.html, respectively, in your browser. The
 resulting pages should be identical!
@@ -165,8 +207,9 @@ Adding attributes is simple: just add the desired attribute between parentheses,
 right after the tag name without a space.  We separate different attributes of
 the same node by using `,`.
 
-Attributes can be used in two forms: short, which uses one line; and tall, which
-uses multiple lines, when a single line would not be practical.
+Attributes can be used in two forms: flat, which uses one line; and tall, which
+uses multiple lines, when a single line would not be practical. Flat forms and
+flat forms are two syntaxes of semantically equivalent expressions.
 
 
 #### Generic
@@ -220,7 +263,7 @@ Add `@` after tag name to link your source.
 
 #### Linking
 
-`;a/"/urbit.org": A link to Urbit.org`
+`;a/"urbit.org": A link to Urbit.org`
 Equals
 `<a href="urbit.org">A link to Urbit.org</a>`
 
@@ -267,21 +310,66 @@ We get a similar result, but we know that it’s a tape because it’s wrapped i
     > "I am a l{<(mul 3 11)>}t Urbit user."
     "I am a l33t Urbit user."
 
-Great. Now let’s apply string interpolation, and other Hoon, in a Sail source
-file.
+Great!
+
+### The Subject
+
+The default subject of a Sail file is different from the subject that
+expressions in the Dojo or a Hoon generator are evaluated against.
+
+To see this difference, first save the code below to a file at
+`home/web/pages/sub.hoon` and view the rendering at
+http://localhost:8080/pages/sub.
+
+```
+;html
+  ;head;
+  ;body
+    {<.>}
+  ==
+==
+```
+
+Then enter the following command in the Dojo:
+
+    > .
+
+You'll notice that the Sail subject is like a stripped-down version of the Dojo
+subject. Its final line should match the Dojo subject.
+
+Now swap the code below into your Sail file.
+
+```
+/=  gas  /$  fuel:html
+;html
+  ;head;
+  ;body
+    {<.>}
+  ==
+==
+```
+
+You'll find that the resulting Sail subject is much larger. If you look closely,
+you'll see that there's some new similarities with the Dojo subject, such as
+containing the name of your ship. There's also some new differences, since
+`fuel:html` contains things that are specifically useful for performing
+web-related operations.
+
+### A More Interesting Example
+
+Now let’s apply knowledge of string interpolation and the Sail subject in a Sail
+source file. This produces a page with much more.
 
 ```
 /=  gas  /$  fuel:html
 =/  show-list  &
-=/  ship-type  p.bem.gas
-=/  ship
-?:  (gth ship-type 255)
-  ?:  (gth ship-type 65.535)
-    ?:  (gth ship-type 4.294.967.295)
-      "comet"
-    "planet"
-  "star"
-"galaxy"
+=+  wid=(met 3 p.bem.gas)
+=/  what-kind
+?:  (lte wid 1)   "galaxy"
+?:  =(2 wid)      "star"
+?:  (lte wid 4)   "planet"
+?:  (lte wid 8)   "moon"
+  "comet"
 ;html
   ;head
     ;meta(charset "utf-8");
@@ -289,21 +377,21 @@ file.
   ==
   ;body
   ;h1: This is the Title
-    ;a/"/urbit.org": A link to Urbit.org
-  ;*  ?:  show-list
-      ;ol   :: unordered list; bullet-points
-        ;li(style "color: green"): We're doing more interesting stuff, now.
-        ;li: We're pretty-printing this sum with Hoon: {<(add 50 50)>}.
-        ;li: the code above is shorthand for {(scow %ud (add 50 50))}.
-        ;li: I am {(trip '~lodleb-ritrul')}.
-        ;li: Actually, my name is {<p.bem.gas>}. I'm a {ship}.
-        ==
-        ;div; My name is {<p.bem.gas>}. I'm a {ship}.
+    ;a/"http://urbit.org": A link to Urbit.org
+    ;+  ?:  show-list
+        ;ol
+            ;li(style "color: green"): We're doing interesting stuff now.
+            ;li: We're pretty-printing this sum with Hoon: {<(add 50 50)>}.
+            ;li: The code above is shorthand for {(scow %ud (add 50 50))}.
+            ;li: I am {(trip '~lodleb-ritrul')}.
+            ;li: Actually, my name is <p.bem.gas>. I'm a {what-kind}.
+          ==
+        ;div: My name is {<p.bem.gas>}. I'm a {what-kind}.
   ==
-==
+==                                                                   
 ```
 
-Save the above Sail code in to `home/web/pages/secondsail` and access the
+Save the above Sail code in to `home/web/pages/secondsail.hoon` and access the
 resulting page by navigating to `http://localhost:8080/pages/secondsail` in
 your browser.
 
@@ -311,53 +399,78 @@ There are some interesting things here. Let’s go through this code piece by
 piece.
 
 ```
-/=  gas  /$  fuel:html
+/=  gas  /$  fuel:html   
 ```
 
 Later in this code we want produce the name of the ship is hosting it, something
 that looks like ~lodleb-ritrul. In a generator, we could produce our ship name
-by writing `our` -- try it in the Dojo. But `our` is not part of the subject
-that a normal Sail page is rendered against. So the above expression uses two
-Ford runes, `/=` and `/$`, to add the relevant subject to the current scope. We
-can pull the ship’s name out of that scope later.
+by writing `our` -- try it in the Dojo. But remember that Sail is rendered
+against its own subject, `our` is not part of the default subject. To augment
+our subject with the information that we need, we use  `/=  gas  /$  fuel:html`.
 
-`/$` is used to get data from the environment, and `/=` puts that in the the
-face `gas`. The
+The above expression uses two Ford runes, `/=` and `/$`, to add the relevant
+information to the current subject. We can pull the ship’s name out of this
+augmented subject later. It's important to note that these runes are not part of
+Hoon. They are part of Ford, our build system.
+
+`/$` is used to get data from the environment, and `/=` adds that data to
+subject in the face `gas`. The
 [Ford user manual](https://urbit.org/docs/arvo/internals/ford/runes/) has
 details on these and other Ford runes, but understanding these runes isn’t
 necessary for the purposes of this tutorial.
 
-`fuel:html` gets extra data from your ship’s
-[Eyre](https://urbit.org/docs/using/web/) module, which handles all things HTTP,
-and sticks it in the subject when Eyre renders a page.
+`fuel:html` gets extra data from your ship’s Eyre module, which handles all
+things HTTP, and sticks it in the subject when Eyre renders a page. This
+includes the name of the ship, which is what we look for in the next line, but
+it includes much more.
+
+`p.bem.gas` is an expression that looks for `p` within `bem` within `gas`, the
+face that we stored the above `fuel:html` expression in. That wing happens to
+resolve to the name of the ship that is hosting the web-server. If we wanted to
+access the current desk, we would use the wing expression `q.bem.gas`.
+
+You can take a look at what you can access by typing `fuel:html` in the Dojo,
+and then explore it by modifying your wing expression in your Sail file
+accordingly.
 
 ```
-=/  show-list  &
-=/  ship-type  p.bem.gas
+=/  show-list  &                                                    
 ```
 
-Here we are storing the variables used later for conditionals. `&` means `true`,
-meaning that any evaluation of `show-list` will be true until changed in the
-source code.
-
-`p.bem.gas` is an expression that looks for `p` within `bem` within `gas`. That
-wing happens to resolve to the name of the ship that is hosting the webserver.
+The above line of code stores a variable used later for a conditional. `&` means
+`true`, meaning that any evaluation of `show-list` will be true until changed in
+the source code.
 
 ```
-?:  (gth ship-type 255)
-  ?:  (gth ship-type 65.535)
-    ?:  (gth ship-type 4.294.967.295)
-      "Comet"
-    "planet"
-  "star"
-"galaxy"
+=+  wid=(met 3 p.bem.gas)
+=/  what-kind                                                             
+  ?:  (lte wid 1)   "galaxy"                                               
+  ?:  =(2 wid)      "star"                                                 
+  ?:  (lte wid 4)   "planet"                                               
+  ?:  (lte wid 8)   "moon"                                                 
+  "comet"    
 ```
 
 This code chunk is a series of conditionals that checks the host ship’s name to
-see what its value is. Ship names are simply another representation of atoms,
-and ship categories are different ranges of possible atomic values. Because of
-this, we perform greater-than tests to see what kind of ship is running the
-webserver.
+see what its value is.
+
+The first line, `=+  wid=(met 3 p.bem.gas)`, combines a new noun with the
+subject and gives it the face `wid`. This noun is produced by the the
+standard-library function [`met`](../library/2c), which measures the number of
+[blocks](../library/1c/) of size `a` within `b`. Blocks are units that have a
+bitwidth of `2^a`. So, in this case, it measures how many bytes (blocks of size
+3 are bitwidths of 8; `2^3 = 8`) are fully contained in your ship's address.
+
+Galaxies contain zero to one 3-blocks; stars contain two 3-blocks; planets
+contain three to four 3-blocks; moons contain five to eight 3-blocks; comets
+contain nine to sixteen 3-blocks. Each test uses `lte`, the
+less-than-or-equal-to function, to determine if `wid` is of a given size. The
+result of this series of tests is added to the subject and given the face
+`what-kind`.
+
+Ship names are simply another representation of atoms, and ship
+categories are different ranges of possible atomic values. Because of this, we
+perform less-than tests to see what kind of ship is running the web-server.
 
 ```
 ;html
@@ -376,55 +489,70 @@ sets the title of the page that shows up in the browser tab.
 ```
   ;body
   ;h1: This is the Title
-    ;a/"/urbit.org": A link to Urbit.org
+    ;a/"http://urbit.org": A link to Urbit.org
 ```
 
 The first line here opens, of course, the body node. The second and third lines
 of the above chunk create header text and a hyperlink, respectively.
 
+In the following lines, we beginning to use some Hoon expressions again.
+
 ```
   ;+  ?:  show-list
           ;ol
+```
+
+In the top line in the chunk above, we use the `;+` Sail rune, which
+resolves an expression to a single node. That expression, in this case, is
+`?:`, which tests the truth value of `show-list`, which we assigned the value
+`&` (meaning “true”) at the beginning of the program. It’s closed by the `==` on
+the last line.
+
+Thus, this program resolves to the first child of `show-list`, the node `;ol`.
+That node creates an ordered list, and the items contained within that node.
+
+```
             ;li(style "color: green"): We're doing more interesting stuff now.
+```
+The line above  is the only element of this list that does not use
+ Hoon proper. The line renders as green, as interpreted by the browser,
+because of the Sail attribute.
+
+The next items in the list use `{}`. Recall that these braces, pronounced “lob”
+and “rob” in Hoon-speak, allow for the interpolation of code within a string.
+```
             ;li: We're pretty-printing this sum with Hoon: {<(add 50 50)>}.
+```
+The line above is interpolated with Hoon code that produces the sum of 50 plus
+50, which is wrapped in `<>` to put the product in double quotes to make it a
+tape, like the rest of the line.
+
+
+```
             ;li: The code above is shorthand for {(scow %ud (add 50 50))}.
+```
+The `{(scow %ud (add 50 50)}` on this line is just a different way
+writing the `{<(add 50 50)>}` expression. `scow` is a Hoon function that turns a
+noun into a `tape`, Hoon’s string type. `%ud` tells `scow` that its argument
+should be displayed in the form of an unsigned decimal.
+
+```
             ;li: I am {(trip '~lodleb-ritrul')}.
+```
+
+The code above turns a `cord` into a `tape`. Cords are one datatype for
+text in Hoon. A cord is just a big atom formed from adjacent unicode bytes, and
+are delineated by `''`. `trip` is a function that takes a cord and produces a
+tape. Remember that all rendered text is treated as a tape. So, by converting
+`~lodleb-ritrul` to a tape, it can be included in the tape that we are trying to
+insert it into without getting a type error.
+
+```
             ;li: Actually, my name is {<p.bem.gas>}. I'm a {what-kind}.
           ==
 ```
-Here, we start to use some Hoon expressions again.
 
-On **line 20** we use the `;+` Sail rune, which resolves an expression to a single
-node. That expression, in this case, is `?:`, which tests a the truth value of
-`show-list`, which we assigned the value `&` (meaning “true”) at the beginning
-of the program. It’s closed by the `==` on line 30.
-
-Thus, this program resolves to the first child of `show-list`, the node `;ol`
-on **line 21**. That node creates an ordered list, and the items
-contained within that node. Items that are worth discussing are the ones that
-use `{}`. Recall that these braces, pronounced “lob” and “rob” in Hoon-speak,
-allow for the interpolation of code within a string.
-
-**line 22** is the only element of this list that does not use Hoon proper. The
-line renders as green, as interpreted by the browser, because of the Sail
-attribute.
-
-On **line 23**, interpolated codes produces the sum of 50 plus 50, which is
-wrapped in `<>` to put the product in double quotes to make it a tape, like
-the rest of the line.
-
-On **line 24**, `{(scow %ud (add 50 50)}` is just a different way writing the
-`{<(add 50 50)>}` expression. `scow` is a Hoon function that turns a noun
-into a `tape`, Hoon’s string type. `%ud` tells `scow` that its argument should
-be displayed in the form of an unsigned decimal.
-
-The code in **line 25** turns a `cord` into a `tape`. Cords are one datatype for
-text in Hoon. A cord is just a big atom formed from adjacent unicode bytes, and
-are delineated by `''`. `trip` is a function that takes a cord and produces a
-tape. All text is treated aso, by converting `~lodleb-ritrul` to a tape, it can
-be included in the tape that it is interpolated in.
-
-**Line 26** has interpolated code that uses a wing expression to access the
+The line above has interpolated code that uses a wing expression to access the
 name of the host ship, and then accesses the face `what-kind` contains a string
 describing what type of ship it is. We declared `gas` on the very first line so
 that we could add that sort of information to the subject that our Sail is
@@ -439,10 +567,9 @@ Note how `{what-kind}` does not have a `<>` wrapper. Why do you think this is?
 ==
 ```
 
-The node on **line 28** is only rendered, as an alternative to the above list,
+The `;div;` node above is only rendered, as an alternative to the above list,
 if `show-list` is evaluated as true. This means it won’t be shown with your
 default code. To show this line, change the `&` on line 2 to `|` (“false”).
-
 
 ### Sail Runes
 
