@@ -93,13 +93,19 @@ front matter, since all Urbit Markdown must come after this rune.
 
 The categories listed in the example above -- `navhome`, `sort`, and `title` --
 make sense to Eyre by default, but any arbitrary category can be used. The code
-below is valid front matter. Note the different data types being used. 
+below is valid front matter. 
 ```
 :-  :~  date/~2018.9.12
         author/~lodleb-ritrul
         music/'rad'
     ==
 ```
+
+Note that `~2018.9.12`, `~lodleb-ritrul`, and `'rad'` are all of of atom
+types: `@da`(date), `@p` (ship name), and `@t` (cord), respectively. Only atom
+types work here. Having `music/"rad"` would prevent the source file from
+parsing.
+
 ### Headers
 
 Headers in Urbit Markdown begin the line with one or more `#` characters,
