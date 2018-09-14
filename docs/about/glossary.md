@@ -801,8 +801,8 @@ It’s written in C. Vere-level errors are prepended with as `bail:`.
 
 Vere is a virtual machine: it pretends to be hardware, and is the single point
 of contact between your Urbit and the rest of your system. But more than that,
-Vere handles the Urbit event log and handles jets. It’s also contains the i/o
-drivers for Urbit’s vanes, responsible for generating events from Unix and
+Vere handles the Urbit event log and handles jets. It also contains the i/o
+drivers for Urbit’s vanes, and is responsible for generating events from Unix and
 applying effects to Unix.
 
 ### Zuse
