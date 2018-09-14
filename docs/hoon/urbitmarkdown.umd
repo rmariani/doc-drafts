@@ -93,7 +93,7 @@ front matter, since all Urbit Markdown must come after this rune.
 
 The categories listed in the example above -- `navhome`, `sort`, and `title` --
 make sense to Eyre by default, but any arbitrary category can be used. The code
-below is valid front matter.
+below is valid front matter. Note the different data types being used. 
 ```
 :-  :~  date/~2018.9.12
         author/~lodleb-ritrul
