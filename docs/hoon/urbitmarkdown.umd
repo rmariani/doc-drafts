@@ -34,8 +34,8 @@ Before starting, make sure that your urbit is
 
 To host Urbit Markdown and other kinds of files, your ship also has a
 web-server, called [Eyre](https://urbit.org/docs/using/web/), that can be found
-at http://localhost:8080/ if it’s your first ship that’s running on the
-machine, http://localhost:8081/ if it’s the second ship on that same machine,
+at `http://localhost:8080/` if it’s your first ship that’s running on the
+machine, `http://localhost:8081/` if it’s the second ship on that same machine,
 and so on. If you can't find your ship on one of these for some reason, try the
 next one.
 
@@ -44,7 +44,7 @@ any sub-folders thereof (except for `/home/web/pages`, which has special
 rendering rules.) Your ship's `%home` desk is served by default. You can
 [change](https://urbit.org/docs/using/web/) which desk you're serving, however.
 
-Everything in the /<your-urbit>/home/web/` directory, with the exception of
+Everything in the `/<your-urbit>/home/web/` directory, with the exception of
 `/home/web/pages`, knows how to interpret and files of `.umd` type. So, to
 experiment with UM, create a `.umd` file in that path, and then try to access it
 at `http://localhost:8080/<yourfile>` in your browser -- no `.umd` required in
@@ -537,6 +537,8 @@ including HTML. It can be used directly within Urbit Markdown to provide
 scripting capability with Hoon and also to provide more precise control over the
 resulting HTML. The [Sail guide](../sail) is a good place to learn the
 specifics.
+
+;>  (add 2 2)
 
 Example:
 ```
