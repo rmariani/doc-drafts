@@ -511,9 +511,9 @@ and creates hyperlinked text out of `link to Urbit.org.`
 
 `;span:  Check it out!` continues that same rendered line further. `;span:`
 has the same use as `<span>` in HTML, and by following it with just a `:` and no
-attributes. Following `;span:` with **two** spaces causes there to be single
-space following the produced `<span>` element, because one of those spaces
-is syntactically necessary.
+attributes, it continues the line without formatting. Following `;span:` with
+**two** spaces causes there to be single space following the produced `<span>`
+element, because one of those spaces is syntactically necessary.
 
 
 In the following lines, we beginning to use some Hoon expressions again.
