@@ -17,7 +17,7 @@ be dealing with Sail as it renders to HTML, a subset of XML.
 Before starting, make sure that your urbit is
 [mounted to Unix](https://urbit.org/docs/using/setup/)
 
-Your ship also has a built-in web-server, called
+To host that output, your ship also has a web-server, called
 [Eyre](https://urbit.org/docs/using/web/), that can be found at
 http://localhost:8080/ if it’s your first ship that’s running on the a
 machine, http://localhost:8081/ if it’s the second ship on that same machine,
@@ -196,7 +196,7 @@ Equals:
 ```
 
 
-### Attributes
+#### Attributes
 
 Attributes are key-value pairs that go into an HTML node.
 
@@ -249,7 +249,7 @@ Add `#` after tag name to add an ID.
 `;h1.text-blue: Title` equals `<h1 class="text-blue">Title</h1>`
 
 Add `.` after tag name to add a class. However, if you want a class name that
-contains a space, you will need to use use the generic-attribute syntax:
+contains a space, you will need to use use the syntax of a generic attribute:
 
 `;div(class "logo inverse");` equals `<div class="logo inverse"></div>`
 
@@ -379,18 +379,20 @@ example we saw before.
   ==
   ;body
   ;h1: This is the Title
-    ;a/"http://urbit.org": A link to Urbit.org
+    ; This is a
+      ;a/"http://urbit.org": link to Urbit.org.
+    ;span:  Check it out!
     ;+  ?:  show-list
         ;ol
-            ;li(style "color: green"): We're doing interesting stuff now.
-            ;li: We're pretty-printing this sum with Hoon: {<(add 50 50)>}.
-            ;li: The code above is shorthand for {(scow %ud (add 50 50))}.
-            ;li: I am {(trip '~lodleb-ritrul')}.
-            ;li: Actually, my name is <p.bem.gas>. I'm a {what-kind}.
-          ==
+          ;li(style "color: green"): We're doing interesting stuff now.
+          ;li: We're pretty-printing this sum with Hoon: {<(add 50 50)>}.
+          ;li: The code above is shorthand for {(scow %ud (add 50 50))}.
+          ;li: I am {(trip '~lodleb-ritrul')}.
+          ;li: Actually, my name is {<p.bem.gas>}. I'm a {what-kind}.
+        ==
         ;div: My name is {<p.bem.gas>}. I'm a {what-kind}.
   ==
-==                                                                   
+==
 ```
 
 Save the above Sail code in to `home/web/pages/secondsail.hoon` and access the
@@ -491,11 +493,28 @@ sets the title of the page that shows up in the browser tab.
 ```
   ;body
   ;h1: This is the Title
-    ;a/"http://urbit.org": A link to Urbit.org
+    ; This is a
+      ;a/"http://urbit.org": link to Urbit.org.
+    ;span:  Check it out!
 ```
 
-The first line here opens, of course, the body node. The second and third lines
-of the above chunk create header text and a hyperlink, respectively.
+The first line here opens, of course, the body node. The second line creates
+header text.
+
+The third, fourth, and fifth lines of code here construct a single line with an
+inline link.
+
+`; This is a` begins the rendered line with plain text.
+
+`;a/"http://urbit.org": link to Urbit.org.` continues that same rendered line,
+and creates hyperlinked text out of `link to Urbit.org.`
+
+`;span:  Check it out!` continues that same rendered line further. `;span:`
+has the same use as `<span>` in HTML, and by following it with just a `:` and no
+attributes. Following `;span:` with **two** spaces causes there to be single
+space following the produced `<span>` element, because one of those spaces
+is syntactically necessary.
+
 
 In the following lines, we beginning to use some Hoon expressions again.
 
