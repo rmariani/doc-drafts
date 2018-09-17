@@ -196,7 +196,7 @@ Equals:
 ```
 
 
-#### Attributes
+### Attributes
 
 Attributes are key-value pairs that go into an HTML node.
 
@@ -248,7 +248,11 @@ Add `#` after tag name to add an ID.
 
 `;h1.text-blue: Title` equals `<h1 class="text-blue">Title</h1>`
 
-Add `.` after tag name to add a class.
+Add `.` after tag name to add a class. However, if you want a class name that
+contains a space, you will need to use use the generic-attribute syntax:
+
+`;div(class "logo inverse");` equals `<div class="logo inverse"></div>`
+
 
 #### Image
 
