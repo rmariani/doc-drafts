@@ -1,10 +1,11 @@
 :-  :~  navhome/'/docs/'
         sort/'28'
         title/'Urbit Markdown'
-    ==
+==
 ;>
 
 # Urbit Markdown: A Guide
+
 
 ### What is Urbit Markdown?
 
@@ -14,6 +15,7 @@ Markdown-inspired syntax. It's integrated with our Hoon programming language,
 allowing it to be used as standalone prose in its own file or embedded inside a
 Hoon source file, in which case it will be parsed into a tree of HTML nodes
 using Hoon's XML-templating syntax, Sail.
+
 
 This document is itself written in Urbit Markdown, and its source file is of the
 Urbit Markdown `.umd` extension. As such, we use some `formatted text` to make
@@ -93,7 +95,8 @@ front matter, since all Urbit Markdown must come after this rune.
 
 The categories listed in the example above -- `navhome`, `sort`, and `title` --
 make sense to Eyre by default, but any arbitrary category can be used. The code
-below is valid front matter. 
+below is valid front matter.
+
 ```
 :-  :~  date/~2018.9.12
         author/~lodleb-ritrul
@@ -320,15 +323,55 @@ the all of the URL that the destination has in common with the origin page.
 *Example:*
 
 ```
-[I'm an reference-style link](../library)
+[I'm a reference-style link](../library)
 ```
 
 ###### Produces:
 
-[I'm an reference-style link](../library)
+[I'm a reference-style link](../library)
 
 If this page is located at `https://www.urbit.org/docs/hoon/`, then these two
 examples should have the same destination.
+
+#### Anchor Link
+
+A link to a section of the same page is in the style of
+`[text to be linked](#the-destination)`.
+
+The destination for the anchor link is designated with the HTML element `id`,
+so we need to use some [Sail](#sail). If there are two or more anchors with
+the same `id` on the page, you will arrive at the earliest instance of the the
+anchor.
+
+###### Example:
+
+```
+Check out this [section](#the-destination) that we want to jump to.
+
+Four score and seven years ago....
+
+It was the best of times, it was the worst of times...
+
+;=
+  ;h2
+    ;div(id "the-destination"): Here we are!
+  ==
+==
+```
+
+###### Produces
+
+Check out this [section](#the-destination) that we want to jump to.
+
+Four score and seven years ago....
+
+It was the best of times, it was the worst of times...
+
+;=
+  ;h2
+    ;div(id "the-destination"): Here we are!
+  ==
+==
 
 ### Double Quote
 
@@ -355,7 +398,7 @@ displayed in a code block literal and not as inline code literal. This is a
 bug.
 
 ```
-\```
+\
 ```
 
 ##### Inline Code Literal
@@ -531,7 +574,11 @@ indent the text in question with *eight spaces*.
         Reel shadows of the indignant desert birds.
 
 
-### Sail Expressions
+;=
+  ;h2
+    ;div(id "sail"): Sail Expressions
+  ==
+==
 
 It's possible to use Urbit Markdown as an HTML templating language akin to
 PHP, ERB, JSP, or Handlebars templates. This facility derives
@@ -544,9 +591,8 @@ scripting capability with Hoon and also to provide more precise control over the
 resulting HTML. The [Sail guide](../sail) is a good place to learn the
 specifics.
 
-;>  (add 2 2)
-
 Example:
+
 ```
 ;=
   ;p
