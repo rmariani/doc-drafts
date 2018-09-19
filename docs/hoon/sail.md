@@ -262,6 +262,14 @@ Equals
 
 Add `@` after tag name to link your source.
 
+To add attributes to the image, like size specifications, add the
+desired attribute after the `"` of the image name and before the final `;` of
+the `img` tag.
+
+For example:
+
+`;img@"https://urbit.org/example.png"(width "100%");`
+
 #### Linking
 
 `;a/"urbit.org": A link to Urbit.org`
