@@ -1,7 +1,8 @@
 :-  :~  navhome/'/docs/'
-        sort/'28'
+        sort/'11'
         title/'Urbit Markdown'
-==
+     ==
+
 ;>
 
 # Urbit Markdown: A Guide
@@ -69,7 +70,7 @@ As an example, let's look at the front matter of this very page:
 
 ```
 :-  :~  navhome/'/docs/'
-        sort/'28'
+        sort/'11'
         title/'Urbit Markdown'
     ==
 ;>
